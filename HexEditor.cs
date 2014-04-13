@@ -1,17 +1,27 @@
 ﻿using UnityEngine;
 using System.Collections;
+using System.Collections.Generic;
 
 public class HexEditor : MonoBehaviour {
 
-	private bool markDelete;
+	private bool markDelete = true;
 	private Color originalColor;
 
 	void Awake () 
 	{
 		if(!Editor.instance.m_EnabledEditor) 
+		{
 			this.enabled = false;
+		} 
 		else
-			originalColor = this.renderer.material.color;
+		{
+			if(this.enabled)
+			{
+				originalColor = this.renderer.material.color;
+				DeleteColor();
+				gameObject.name = transform.GetInstanceID().ToString();
+			}
+		}
 	}
 	
 	// Update is called once per frame
@@ -35,10 +45,7 @@ public class HexEditor : MonoBehaviour {
 				if(!markDelete)
 				{
 					markDelete = true;
-					Color deleteColor = this.renderer.material.color;
-					deleteColor = Color.red;
-					deleteColor.a = 0.1f;
-					this.renderer.material.color = deleteColor;
+					DeleteColor();
 					Editor.instance.RightClickHex(this.gameObject);
 				}
 				else
@@ -51,6 +58,14 @@ public class HexEditor : MonoBehaviour {
 
 	}
 
+	void DeleteColor()
+	{
+		Color deleteColor = this.renderer.material.color;
+		deleteColor = Color.red;
+		deleteColor.a = 0.1f;
+		this.renderer.material.color = deleteColor;
+	}
+
 	void DeleteChild()
 	{
 		if(this.transform.childCount > 0)
@@ -58,5 +73,11 @@ public class HexEditor : MonoBehaviour {
 			Transform old = this.transform.GetChild(0);
 			Destroy(old.gameObject);
 		}
+	}
+
+	private void OnDrawGizmosSelected() {
+		Gizmos.color = Color.red;
+		//Use the same vars you use to draw your Overlap SPhere to draw your Wire Sphere.
+		Gizmos.DrawWireSphere (transform.position, 1.5f);
 	}
 }

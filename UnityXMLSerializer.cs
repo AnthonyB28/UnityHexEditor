@@ -187,12 +187,21 @@ public struct HexTileSerializable
 	public SerializableVector3 position;
 	public SerializableVector3 scale;
 	public HexType type;
+	public int ID;
+	public List<int> neighbors;
 	
-	public HexTileSerializable(Transform transform, HexType t)
+	public HexTileSerializable(Transform transform, HexType t, int id)
 	{
 		this.position = new SerializableVector3(transform.position);
 		this.scale = new SerializableVector3(transform.localScale);
 		this.type = t;
+		this.ID = id;
+		neighbors = new List<int>();
+	}
+
+	public void AddNeighborList(List<int> nList)
+	{
+		neighbors = nList;
 	}
 	
 	public Vector3 GetPosition()
